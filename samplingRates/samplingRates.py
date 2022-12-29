@@ -1,14 +1,23 @@
+""" 
+The current state of passive sampling leads to a variety of methods and tools being used to estimate sampling rates
+Considering the number of assumptions already needing to be made (constant water concentration, consistent flow effects etc.) it would be benficial for the field to have a consistent approach
+This package attempts to define functions for estimating sampling rates in a simple and concise manner
+
+These equations are for passive sampler designs which do not expect to have significant effects from flow rate (i.e. the water boundary layer [WBL] is negated by the diffusive layer)
+"""
+# Import necessary libraries/packages/modules
+
 from numpy import exp
 import scipy as sp
 from scipy.optimize import curve_fit
-""" 
+import matplotlib.pyplot as plt
 
-Calculate sampling rates when flow of water is not a concern due to diffusion being majority limited by a diffusive layer significantly 
-"""
 
+# These functions deal with the curvilinear period of the uptake curve, this requires curve fitting a model to estimate sorbent water coefficient (ksw) and sampling rate (rs)
 def nonlin(rs, time, ksw, mass): 
-    # create the full equation for the non/curvilinear phase for a passive sampler with limited Water boundary layer (WBL) intereference
+    # create the full equation for the non/curvilinear phase for a passive sampler with limited WBL intereference
     return ksw * mass * (1 - exp(-(rs * time)/(ksw * mass)))
+
 
 def two_phase_nonlin_fit(): 
     # estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL intereference
@@ -17,6 +26,8 @@ def two_phase_nonlin_fit():
     ksw, sampling_rate = params[0], params[1]
     print(ksw, sampling_rate)
     
+
+# These functions deal with the kinetic period of the uptake curve, here a linear regression is an appropriate approximation of the rs
 def two_phase_kinetic(time, compound, time_unit = 'day', water_unit = 'mL'): 
     # estimate sampling rate for a passive sampler in the kinetic phase (with limited WBL interference)
     # This is essentially a simple wrapper around scipy's linear regression, slope is an approximation of sampling rate in a linear system
