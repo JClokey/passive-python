@@ -19,6 +19,10 @@ def nonlin(rs, time, ksw, mass):
     return ksw * mass * (1 - exp(-(rs * time)/(ksw * mass)))
 
 
+def plateau(ksw, mass):
+    # CHECK THIS!!!
+    return ksw * mass
+
 def two_phase_nonlin_fit(): 
     # estimate sampling rate for the curvilinear phase for a passive sampler with limited WBL intereference
     # this uses the nonlin function and a curve fitting method from scipy.optimize
@@ -40,6 +44,18 @@ def two_phase_kinetic(time, compound, time_unit = 'day', water_unit = 'mL'):
     print(f"Sampling rate is {results[0]:.3f} ± {results[4]:.3f}{water_unit}/{time_unit}\np-value is {results[3]}\nR\u00B2 is {results[2]:.3f}")
 
 
+def kinetic_plot(time, compound, time_unit = 'day', water_unit = 'mL'):
+    if len(compound) == 0 or len(time) == 0:
+        raise ValueError("Inputs must not be empty.")
+    if len(compound) != len(time):
+        raise ValueError(f"The two arrays need to match in length, your time array is {len(time)} long while your compound array is {len(compound)}")
+    #rs = ns/(cw*t)
+    results = sp.stats.linregress(time, compound)
+    print(f"Sampling rate is {results[0]:.3f} ± {results[4]:.3f}{water_unit}/{time_unit}\np-value is {results[3]}\nR\u00B2 is {results[2]:.3f}")
+
+
+
+# This section deals with comparing the fits of models i.e. it attempts to quantify whether the dataset is in the kinetic or non-linear phase
 def compare_fits(): 
     # compare a linear to a non-linear fit and provide estimators of best fit
     # this will utilise the two_phase_kinetic and two_phase_nonlin_fit functions and compare using AIC, R-squared and p-value, giving an estimation of best sampling rate

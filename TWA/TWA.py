@@ -23,6 +23,9 @@ Thus we can solve for Cw which is the time weighted average by rearranging to:
 Cw = (Cs*Ms)/(Rs*t)
 """
 
-def time_weighted_average(sampling_rate, time, mass, conc_sorbent):
-    TWA = (conc_sorbent * mass)/(sampling_rate * time)
-    return TWA
+def TWA(sampling_rate, time, mass, conc_sorbent):
+    time_weighted_average = (conc_sorbent * mass)/(sampling_rate * time)
+    return time_weighted_average
+
+
+def Ksw()
