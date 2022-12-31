@@ -11,6 +11,7 @@ from numpy import exp
 import scipy as sp
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 # These functions deal with the curvilinear period of the uptake curve, this requires curve fitting a model to estimate sorbent water coefficient (ksw) and sampling rate (rs)
@@ -32,7 +33,7 @@ def two_phase_nonlin_fit():
     
 
 # These functions deal with the kinetic period of the uptake curve, here a linear regression is an appropriate approximation of the rs
-def two_phase_kinetic(time, compound, time_unit = 'day', water_unit = 'mL'): 
+def two_phase_kinetic(df, time, compound, time_unit = 'day', water_unit = 'mL', plot = False): 
     # estimate sampling rate for a passive sampler in the kinetic phase (with limited WBL interference)
     # This is essentially a simple wrapper around scipy's linear regression, slope is an approximation of sampling rate in a linear system
     if len(compound) == 0 or len(time) == 0:
@@ -43,6 +44,10 @@ def two_phase_kinetic(time, compound, time_unit = 'day', water_unit = 'mL'):
     results = sp.stats.linregress(time, compound)
     print(f"Sampling rate is {results[0]:.3f} ± {results[4]:.3f}{water_unit}/{time_unit}\np-value is {results[3]}\nR\u00B2 is {results[2]:.3f}")
 
+    if plot == True:
+        sns.lmplot(data = df, x = time, y = compound).set(title = compound)
+        plt.show()
+    
 
 def kinetic_plot(time, compound, time_unit = 'day', water_unit = 'mL'):
     if len(compound) == 0 or len(time) == 0:

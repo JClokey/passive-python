@@ -28,4 +28,5 @@ def TWA(sampling_rate, time, mass, conc_sorbent):
     return time_weighted_average
 
 
-def Ksw()
+def Ksw():
+    pass
